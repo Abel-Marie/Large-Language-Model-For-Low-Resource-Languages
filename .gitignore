@@ -1,0 +1,39 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Environment
+.env
+.venv/
+venv/
+ENV/
+env/
+*.env
+
+# VSCode settings
+.vscode/
+
+# Data and Models
+data/
+models/
+outputs/
+
+# Logs
+*.log
+logs/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# PyTorch checkpoints
+*.pt
+*.pth
+
+# Tokenizers
+*.json
+*.vocab
