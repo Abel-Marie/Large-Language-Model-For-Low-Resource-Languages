@@ -14,26 +14,26 @@ ENV/
 env/
 *.env
 
-# VSCode settings
-.vscode/
+# # VSCode settings
+# .vscode/
 
-# Data and Models
-data/
-models/
-outputs/
+# # Data and Models
+# data/
+# models/
+# outputs/
 
-# Logs
-*.log
-logs/
+# # Logs
+# *.log
+# logs/
 
-# System files
-.DS_Store
-Thumbs.db
+# # System files
+# .DS_Store
+# Thumbs.db
 
-# PyTorch checkpoints
-*.pt
-*.pth
+# # PyTorch checkpoints
+# *.pt
+# *.pth
 
-# Tokenizers
-*.json
-*.vocab
+# # Tokenizers
+# *.json
+# *.vocab
