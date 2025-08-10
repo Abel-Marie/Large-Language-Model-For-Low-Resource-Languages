@@ -45,4 +45,7 @@ def clean_amharic_text(text):
     for pattern in patterns:
         text = re.sub(pattern, '', text)
 
-    
+    text = re.sub(r'([፡።፣፤፦፧፨])', r' \1', text)
+    text = re.sub(r'[A-Za-z]', '', text)
+    text = re.sub(r'[^ሀ-ፐ0-9\s.,;!?\'"()\[\]{}፡።፣፤፦፧፨-]+', ' ', text)
+    return re.sub(r'\s+', ' ', text).strip()
