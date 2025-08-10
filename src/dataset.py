@@ -22,4 +22,21 @@ class GPTDataset(Dataset):
     def __getitem__(self, idx):
         return self.input_ids[idx], self.target_ids[idx]
     
-    
+
+def create_dataloader(text, tokenizer, batch_size, max_length, stride, shuffle=True):
+    """
+    Create a PyTorch DataLoader from raw text for GPT-style training.
+
+    Args:
+        text (str): Raw input text.
+        tokenizer: Tokenizer with an `.encode()` method.
+        batch_size (int): Batch size.
+        max_length (int): Length of each training sequence.
+        stride (int): Overlap between windows.
+        shuffle (bool): Whether to shuffle the data.
+
+    Returns:
+        DataLoader: A PyTorch DataLoader for training.
+    """
+    dataset = GPTDataset(text, tokenizer, max_length, stride)
+    return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, drop_last=True)
