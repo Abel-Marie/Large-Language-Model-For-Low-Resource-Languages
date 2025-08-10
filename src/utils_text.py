@@ -34,4 +34,15 @@ def clean_amharic_text(text):
     for amh, arabic in amharic_numerals.items():
         text = text.replace(amh, arabic)
 
+    patterns = [
+        r'http\S+|www\S+|bit\.ly\S+',
+        r'\S*@\S*\s?',
+        r'@[A-Za-z0-9_]+',
+        r'#\S+',
+        r'<.*?>'
+    ]
+
+    for pattern in patterns:
+        text = re.sub(pattern, '', text)
+
     
