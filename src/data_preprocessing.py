@@ -26,3 +26,9 @@ def clean_corpus(text_lines, min_length=10, verbos=False):
         print(f"After cleaning: {len(cleaned)}")
         print(f"Total chars: {sum(len(x) for x in cleaned)}")
     return cleaned
+
+def save_cleaned(lines, path):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        for line in lines:
+            f.write(line + '\n')
