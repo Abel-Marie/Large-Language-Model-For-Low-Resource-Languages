@@ -51,6 +51,26 @@ def token_ids_to_text(token_ids, tokenizer):
     flat = token_ids.squeeze(0) # remove batch dimension
     return tokenizer.decode(flat.tolist())
 
+def generate(model, idx, max_new_tokens, temperature=1.0, top_k=None):
+    context_size = model.cfg["context_length"]
+    for _ in range(max_new_tokens):
+        idx_cond = idx[:, -context_size:]
+        with torch.no_grad():
+            logits = model(idx_cond)
+        logits = logits[:, -1, :]
+
+        if top_k is not None:
+            top_logits, _ = torch.topk(logits, top_k)
+            logits = torch.where(logits < top_logits[:, [-1]], -torch.inf, logits)
+
+        if temperature > 0.0:
+            probs = torch.softmax(logits / temperature, dim=-1)
+            idx_next = torch.multinomial(probs, num_samples=1)
+        else:
+            idx_next = torch.argmax(logits, dim=-1, keepdim=True)
+
+        idx = torch.cat((idx, idx_next), dim=1)
+    return idx
 
 def train_model(model, train_loader, val_loader, optimizer, device,
                 n_epochs, eval_freq, eval_iter, start_context, tokenizer,
