@@ -1,6 +1,6 @@
 from src.dataset import create_dataloader
 from src.gpt_model import GPTModel
-from loss.py import calc_loss_batch, calc_loss_loader
+from loss.py import calc_loss_batch, calc_loss_loader, evaluate_model
 import torch
 import math
 
@@ -40,6 +40,16 @@ val_loader = create_dataloader(
     shuffle=False,
     num_workers=0
 )
+
+
+def text_to_token_ids(text, tokenizer):
+    encoded = tokenizer.encode(text, allowed_special={'<|endoftext|>'})
+    encoded_tensor = torch.tensor(encoded).unsqueeze(0) # add batch dimension
+    return encoded_tensor
+
+def token_ids_to_text(token_ids, tokenizer):
+    flat = token_ids.squeeze(0) # remove batch dimension
+    return tokenizer.decode(flat.tolist())
 
 
 def train_model(model, train_loader, val_loader, optimizer, device,
@@ -112,3 +122,5 @@ def train_model(model, train_loader, val_loader, optimizer, device,
         )
 
     return train_losses, val_losses, track_tokens_seen, track_lrs
+
+
