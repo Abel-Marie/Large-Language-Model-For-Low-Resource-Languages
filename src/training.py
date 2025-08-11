@@ -172,3 +172,7 @@ except FileNotFoundError:
     sys.exit(1)
 
 
+# --- Initialize Tokenizer ---
+tokenizer = XLMRobertaTokenizerFast.from_pretrained("xlm-roberta-base")
+GPT_CONFIG_MICRO["vocab_size"] = tokenizer.vocab_size # Dynamically set vocab size
+print(f"✅ Tokenizer loaded. Vocabulary size: {GPT_CONFIG_124M['vocab_size']}")
