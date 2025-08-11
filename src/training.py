@@ -151,3 +151,24 @@ WEIGHT_DECAY = 0.1
 EVAL_FREQ = 100
 EVAL_ITER = 20
 WARMUP_STEPS = 20
+
+
+# --- Device Setup ---
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f" Using device: {str(device).upper()}")
+
+
+# --- File Path ---
+filepath = "/data/processed/cleaned_amh_data.txt"
+
+
+# --- Load Raw Text ---
+try:
+    with open(filepath, "r", encoding="utf-8", errors='replace') as f:
+        text_data = f.read()
+    print(f"✅ File loaded successfully. Total characters: {len(text_data)}")
+except FileNotFoundError:
+    print(f"❌ File not found: {filepath}. Please upload 'cleaned_amh_data.txt'.")
+    sys.exit(1)
+
+
