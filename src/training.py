@@ -137,10 +137,17 @@ def train_model(model, train_loader, val_loader, optimizer, device,
                       f"Val loss {val_loss:.3f}")
 
         # Generate and print a sample from the model to monitor progress
-        generate_and_print_sample(
+        generate(
             model, tokenizer, device, start_context
         )
 
     return train_losses, val_losses, track_tokens_seen, track_lrs
 
 
+NUM_EPOCHS = 3
+BATCH_SIZE = 8 
+LEARNING_RATE = 1e-4 
+WEIGHT_DECAY = 0.1
+EVAL_FREQ = 100
+EVAL_ITER = 20
+WARMUP_STEPS = 20
