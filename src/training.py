@@ -186,3 +186,15 @@ if train_losses: # Only plot if training happened
     ax2.set_xlabel("Tokens Seen"); ax2.set_ylabel("Learning Rate")
     ax2.set_title("Learning Rate Schedule"); ax2.legend(); ax2.grid(True)
     plt.tight_layout(); plt.show()
+
+
+# generating text 
+
+print("\n🤖 Generating final sample text...")
+model.eval()
+start_context = "ኢትዮጵያ በምሥራቅ አፍሪካ የምትገኝ" 
+encoded_context = text_to_token_ids(start_context, tokenizer).to(device)
+generated_ids = generate(model, encoded_context, max_new_tokens=100, top_k=35, temperature=0.8)
+print("\n--- Generated Text ---")
+print(token_ids_to_text(generated_ids, tokenizer))
+print("------------------------\n")
