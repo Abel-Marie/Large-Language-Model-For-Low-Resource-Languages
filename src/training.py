@@ -2,7 +2,13 @@ from src.dataset import create_dataloader
 from src.gpt_model import GPTModel
 from loss.py import calc_loss_batch, calc_loss_loader, evaluate_model
 import torch
+import torch.nn as nn
+from torch.nn import functional as F
+from transformers import XLMRobertaTokenizerFast
+import sys
 import math
+import matplotlib.pyplot as plt
+
 
 GPT_CONFIG_124M = {
     "vocab_size": 50257,   # Vocabulary size
@@ -138,7 +144,7 @@ filepath = "/data/processed/cleaned_amh_data.txt"
 try:
     with open(filepath, "r", encoding="utf-8", errors='replace') as f:
         text_data = f.read()
-    print(f"✅ File loaded successfully. Total characters: {len(text_data)}")
+    print(f"File loaded successfully. Total characters: {len(text_data)}")
 except FileNotFoundError:
     print(f"❌ File not found: {filepath}. Please upload 'cleaned_amh_data.txt'.")
     sys.exit(1)
@@ -147,23 +153,36 @@ except FileNotFoundError:
 # --- Initialize Tokenizer ---
 tokenizer = XLMRobertaTokenizerFast.from_pretrained("xlm-roberta-base")
 GPT_CONFIG_124M["vocab_size"] = tokenizer.vocab_size # Dynamically set vocab size
-print(f"✅ Tokenizer loaded. Vocabulary size: {GPT_CONFIG_124M['vocab_size']}")
+print(f"Tokenizer loaded. Vocabulary size: {GPT_CONFIG_124M['vocab_size']}")
 
 
 # Execute Trainig
 
 torch.manual_seed(123)
-# Use the smaller model configuration
 model = GPTModel(GPT_CONFIG_124M)
 model.to(device)
-print(f"✅ Model created with {sum(p.numel() for p in model.parameters())/1e6:.2f}M parameters.")
+print(f" Model created with {sum(p.numel() for p in model.parameters())/1e6:.2f}M parameters.")
 
 optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
 
-print("\n🚀 Starting model training...")
+print(" Starting model training...")
 train_losses, val_losses, tokens_seen, lrs = train_model(
     model, train_loader, val_loader, optimizer, device,
     n_epochs=NUM_EPOCHS, eval_freq=EVAL_FREQ, eval_iter=EVAL_ITER,
     warmup_steps=WARMUP_STEPS, start_context="ሰላም! ይህ የ", tokenizer=tokenizer
 )
 
+
+# Plot Results
+
+if train_losses: # Only plot if training happened
+    print("\nTraining finished. Plotting results...")
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
+    ax1.plot(tokens_seen, train_losses, label="Training Loss")
+    ax1.plot(tokens_seen, val_losses, linestyle="--", label="Validation Loss")
+    ax1.set_ylabel("Loss"); ax1.set_title("Training and Validation Losses")
+    ax1.legend(); ax1.grid(True)
+    ax2.plot(tokens_seen, lrs, label="Learning Rate", color='green')
+    ax2.set_xlabel("Tokens Seen"); ax2.set_ylabel("Learning Rate")
+    ax2.set_title("Learning Rate Schedule"); ax2.legend(); ax2.grid(True)
+    plt.tight_layout(); plt.show()
