@@ -1,5 +1,7 @@
 import argparse
-from srs.data_preprocessing import load_dataset, clean_corpus, save_cleaned
+
+from src.data_preprocessing import load_dataset, clean_corpus, save_cleaned
+
 
 def main():
     parser = argparse.ArgumentParser(description="Clean Amharic text data.")
@@ -14,7 +16,7 @@ def main():
     cleaned = clean_corpus(df['text'].tolist(), min_length=args.min_len, verbose=args.verbose)
     save_cleaned(cleaned, args.output)
 
-    print(f"\n✅ Done. Cleaned file saved at: {args.output}")
+    print(f"Done. Cleaned file saved at: {args.output}")
 
 
 if __name__ == '__main__':
